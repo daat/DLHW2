@@ -158,7 +158,7 @@ def classify_example(x, sm, sparm):
     result.insert(0, max_j)
     for j in range(len(labels), -1, -1):
         result.insert(0, labels[j][result[0]])
-    return sum([i*j for i,j in zip(x,sm.w[:-1])]) + sm.w[-1]
+    return result
 
 def find_most_violated_constraint(x, y, sm, sparm):
     """Return ybar associated with x's most violated constraint.
@@ -211,6 +211,29 @@ def psi(x, y, sm, sparm):
     thePsi.append(0.5*y) # Pretend as though x had an 1 at the end.
     return svmapi.Sparse(thePsi)
 
+def edit_distance(y, ybar):
+    d = [i for i in range(len(ybar)+1)]
+    for j in range(1, len(y)+1):
+        nd = [k for k in range(len(ybar)+1)]
+        for i in range(1, len(ybar)+1):
+            if ybar[i-1] == y[j-1]:
+                nd[i] = d[i-1]
+            else:
+                nd[i] = min(nd[i-1], d[i], d[i-1]) + 1
+        d = nd
+    return d[-1]
+
+def error_rate(y, ybar):
+    if len(y) != len(ybar):
+        return 1.
+
+    e = 0.
+    for i in range(len(ybar)):
+        if y[i] != ybar[i]:
+            e += 1
+            
+    return e/len(ybar)
+
 def loss(y, ybar, sparm):
     """Return the loss of ybar relative to the true labeling y.
     
@@ -224,8 +247,10 @@ def loss(y, ybar, sparm):
     The default behavior is to perform 0/1 loss based on the truth of
     y==ybar."""
     # If they're the same sign, then the loss should be 0.
-    if y*ybar > 0: return 0
-    return 1
+    #if y*ybar > 0: return 0
+    #return 1
+
+    return edit_distance(y, ybar)
 
 def print_iteration_stats(ceps, cached_constraint, sample, sm,
                           cset, alpha, sparm):
