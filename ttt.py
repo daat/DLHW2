@@ -104,30 +104,7 @@ def init_constraints(sample, sm, sparm):
 
     The default behavior is equivalent to returning an empty list,
     i.e., no constraints."""
-	'''
-    if True:
-        # Just some example cosntraints.
-        c, d = svmapi.Sparse, svmapi.Document
-        # Return some really goofy constraints!  Normally, if the SVM
-        # is allowed to converge normally, the second and fourth
-        # features are 0 and -1 respectively for sufficiently high C.
-        # Let's make them be greater than 1 and 0.2 respectively!!
-        # Both forms of a feature vector (sparse and then full) are
-        # shown.
-        return [(d([c([(1,1)])],slackid=len(sample)+1),   1),
-                (d([c([0,0,0,1])],slackid=len(sample)+1),.2)]
-    # Encode positivity constraints.  Note that this constraint is
-    # satisfied subject to slack constraints.
-    constraints = []
-    for i in xrange(sm.size_psi):
-        # Create a sparse vector which selects out a single feature.
-        sparse = svmapi.Sparse([(i,1)])
-        # The left hand side of the inequality is a document.
-        lhs = svmapi.Document([sparse], costfactor=1, slackid=i+1+len(sample))
-        # Append the lhs and the rhs (in this case 0).
-        constraints.append((lhs, 0))
-    return constraints
-    '''
+	
     return []
 
 
@@ -136,7 +113,7 @@ def classify_example(x, sm, sparm):
     # Believe it or not, this is a dot product.  The last element of
     # sm.w is assumed to be the weight associated with the bias
     # feature as explained earlier.
-    a = [sum([ x[0][i]*sm.w[l*69+i] for i in range(69))]) for l in range(48)]
+    a = [sum([ x[0][i]*sm.w[l*69+i] for i in range(69)]) for l in range(48)]
     labels = []
     for t in range(1, len(x)):
         na = []
@@ -166,7 +143,7 @@ def classify_example(x, sm, sparm):
         result.insert(0, labels[j][result[0]])
     return result
 
-def find_most_violated_constraint(x, y, sm, sparm):
+#def find_most_violated_constraint(x, y, sm, sparm):
     """Return ybar associated with x's most violated constraint.
 
     Returns the label ybar for pattern x corresponding to the most
@@ -182,10 +159,10 @@ def find_most_violated_constraint(x, y, sm, sparm):
     loss into account at all, but it isn't always a terrible
     approximation.  One still technically maintains the empirical
     risk bound condition, but without any regularization."""
-    score = classify_example(x,sm,sparm)
-    discy, discny = y*score, -y*score + 1
-    if discy > discny: return y
-    return -y
+    #score = classify_example(x,sm,sparm)
+    #discy, discny = y*score, -y*score + 1
+    #if discy > discny: return y
+    #return -y
 #
 def find_most_violated_constraint_slack(x, y, sm, sparm):
     """Return ybar associated with x's most violated constraint.
@@ -223,21 +200,8 @@ def psi(x, y, sm, sparm):
 		thePsi.extend(observation_values[i])
 	for i in range(48):
 		thePsi.extend(transition_values[i])
-	'''
-	thePsi = []
-    """Return a feature vector representing pattern x and label y.
 
-    This is the combined feature function, which this returns either a
-    svmapi.Sparse object, or sequence of svmapi.Sparse objects (useful
-    during kernel evaluations, as all components undergo kernel
-    evaluation separately).  There is no default behavior."""
-    # In the case of binary classification, psi is just the class (+1
-    # or -1) times the feature vector for x, including that special
-    # constant bias feature we pretend that we have.
-    thePsi = [0.5*y*i for i in x]
-    thePsi.append(0.5*y) # Pretend as though x had an 1 at the end.
-    '''
-    return svmapi.Sparse(thePsi)
+	return svmapi.Sparse(thePsi)
 #
 def edit_distance(y, ybar):
     d = [i for i in range(len(ybar)+1)]

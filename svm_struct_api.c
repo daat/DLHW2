@@ -86,6 +86,7 @@ static void api_load_module(int argc, char* argv[]) {
 
   if (pModule == NULL) {
     // If we could not load the module, output some helpful diagnostic output.
+  	PyErr_Print();
     fprintf(stderr, "COULD NOT LOAD MODULE \"%s\"!\n", moduleName);
     fprintf(stderr, "perhaps module is not in module search path?\n");
     fprintf(stderr, "path is: %s\n", Py_GetPath());

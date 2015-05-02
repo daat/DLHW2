@@ -2,3 +2,6 @@
 svm_python_classify
 svm_python_learn
 *.pyc
+*.lab
+*.ark
+
