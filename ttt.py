@@ -186,7 +186,7 @@ def find_most_violated_constraint(x, y, sm, sparm):
     discy, discny = y*score, -y*score + 1
     if discy > discny: return y
     return -y
-
+#
 def find_most_violated_constraint_slack(x, y, sm, sparm):
     """Return ybar associated with x's most violated constraint.
 
@@ -194,7 +194,7 @@ def find_most_violated_constraint_slack(x, y, sm, sparm):
     The default behavior is that this returns the value from the
     general find_most_violated_constraint function."""
     return find_most_violated_constraint(x, y, sm, sparm)
-
+#
 def find_most_violated_constraint_margin(x, y, sm, sparm):
     """Return ybar associated with x's most violated constraint.
 
@@ -238,7 +238,7 @@ def psi(x, y, sm, sparm):
     thePsi.append(0.5*y) # Pretend as though x had an 1 at the end.
     '''
     return svmapi.Sparse(thePsi)
-
+#
 def edit_distance(y, ybar):
     d = [i for i in range(len(ybar)+1)]
     for j in range(1, len(y)+1):
@@ -250,7 +250,7 @@ def edit_distance(y, ybar):
                 nd[i] = min(nd[i-1], d[i], d[i-1]) + 1
         d = nd
     return d[-1]
-
+#
 def error_rate(y, ybar):
     if len(y) != len(ybar):
         return 1.
@@ -261,7 +261,7 @@ def error_rate(y, ybar):
             e += 1
 
     return e/len(ybar)
-
+#
 def loss(y, ybar, sparm):
     """Return the loss of ybar relative to the true labeling y.
 
@@ -280,7 +280,7 @@ def loss(y, ybar, sparm):
 
     #return error_rate(y, ybar)
     return edit_distance(y, ybar)
-
+#
 def print_iteration_stats(ceps, cached_constraint, sample, sm,
                           cset, alpha, sparm):
     """Called just before the end of each cutting plane iteration.
@@ -292,8 +292,8 @@ def print_iteration_stats(ceps, cached_constraint, sample, sm,
     constructed from the cache.
 
     The default behavior is that nothing is printed."""
-    print
-
+    print ceps
+#
 def print_learning_stats(sample, sm, cset, alpha, sparm):
     """Print statistics once learning has finished.
 
@@ -313,7 +313,7 @@ def print_learning_stats(sample, sm, cset, alpha, sparm):
     print '[',', '.join(['%g'%i for i in sm.w]),']'
     print 'Losses:',
     print [loss(y, classify_example(x, sm, sparm), sparm) for x,y in sample]
-
+#
 def print_testing_stats(sample, sm, sparm, teststats):
     """Print statistics once classification has finished.
 
@@ -323,7 +323,7 @@ def print_testing_stats(sample, sm, sparm, teststats):
 
     The default behavior is that nothing is printed."""
     print teststats
-
+#
 def eval_prediction(exnum, (x, y), ypred, sm, sparm, teststats):
     """Accumulate statistics about a single training example.
 
@@ -374,7 +374,6 @@ def write_label(fileptr, y):
     ignored.)  The default behavior is equivalent to
     'print>>fileptr,y'"""
     print>>fileptr," ".join([str(yy) for yy in y])
-
 #
 def print_help():
     """Help printed for badly formed CL-arguments when learning.
