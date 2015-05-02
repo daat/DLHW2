@@ -28,6 +28,7 @@ def parse_parameters_classify(attribute, value):
     arguments are ignored."""
     print 'Got a custom command line argument %s %s' % (attribute, value)
 '''
+#
 def read_examples(filename, sparm):
     """Reads and returns x,y example pairs from a file.
 
@@ -64,7 +65,7 @@ def read_examples(filename, sparm):
 	data.append((x, y))
 
     return data
-
+#
 def init_model(sample, sm, sparm):
     """Initializes the learning model.
 
@@ -78,7 +79,7 @@ def init_model(sample, sm, sparm):
     # for a last "bias" feature.
     #sm.size_psi = len(sample[0][0])+1
     sm.size_psi = 69*48+48*48
-
+#
 def init_constraints(sample, sm, sparm):
     """Initializes special constraints.
 
@@ -201,7 +202,7 @@ def find_most_violated_constraint_margin(x, y, sm, sparm):
     The default behavior is that this returns the value from the
     general find_most_violated_constraint function."""
     return find_most_violated_constraint(x, y, sm, sparm)
-
+#
 def psi(x, y, sm, sparm):
 
 	sequence_length = len(y)
@@ -237,7 +238,7 @@ def psi(x, y, sm, sparm):
     thePsi.append(0.5*y) # Pretend as though x had an 1 at the end.
     '''
     return svmapi.Sparse(thePsi)
-
+#
 def loss(y, ybar, sparm):
     """Return the loss of ybar relative to the true labeling y.
 
@@ -313,7 +314,7 @@ def eval_prediction(exnum, (x, y), ypred, sm, sparm, teststats):
     print 'on example',exnum,'predicted',ypred,'where correct is',y
     teststats.append(loss(y, ypred, sparm))
     return teststats
-
+#
 def write_model(filename, sm, sparm):
     """Dump the structmodel sm to a file.
 
@@ -325,7 +326,7 @@ def write_model(filename, sm, sparm):
     f = bz2.BZ2File(filename, 'w')
     cPickle.dump(sm, f)
     f.close()
-
+#
 def read_model(filename, sparm):
     """Load the structure model from a file.
 
@@ -336,7 +337,7 @@ def read_model(filename, sparm):
     'return cPickle.load(bz2.BZ2File(filename))'."""
     import cPickle, bz2
     return cPickle.load(bz2.BZ2File(filename))
-
+#
 def write_label(fileptr, y):
     """Write a predicted label to an open file.
 
@@ -347,7 +348,7 @@ def write_label(fileptr, y):
     ignored.)  The default behavior is equivalent to
     'print>>fileptr,y'"""
     print>>fileptr,y
-
+#
 def print_help():
     """Help printed for badly formed CL-arguments when learning.
 
@@ -356,7 +357,7 @@ def print_help():
     the --m option to load a Python module."""
     print svmapi.default_help
     print "This is a help string for the learner!"
-
+#
 def print_help_classify():
     """Help printed for badly formed CL-arguments when classifying.
 
