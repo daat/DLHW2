@@ -2,14 +2,15 @@
 
 # Thomas Finley, tfinley@gmail.com
 import svmapi
+'''
 def parse_parameters(sparm):
     """Sets attributes of sparm based on command line arguments.
-    
+
     This gives the user code a chance to change sparm based on the
     custom command line arguments.  The custom command line arguments
     are stored in sparm.argv as a list of strings.  The custom command
     lines are stored in '--option', then 'value' sequence.
-    
+
     If this function is not implemented, any custom command line
     arguments are ignored and sparm remains unchanged."""
     sparm.arbitrary_parameter = 'I am an arbitrary parameter!'
@@ -26,10 +27,10 @@ def parse_parameters_classify(attribute, value):
     If this function is not implemented, any custom command line
     arguments are ignored."""
     print 'Got a custom command line argument %s %s' % (attribute, value)
-
+'''
 def read_examples(filename, sparm):
     """Reads and returns x,y example pairs from a file.
-    
+
     This reads the examples contained at the file at path filename and
     returns them as a sequence.  Each element of the sequence should
     be an object 'e' where e[0] and e[1] is the pattern (x) and label
@@ -59,12 +60,14 @@ def read_examples(filename, sparm):
 
         x.append([float(f) for f in features.split(" ")])
         y.append(int(label))
+	#the last sequence
+	data.append((x, y))
 
     return data
 
 def init_model(sample, sm, sparm):
     """Initializes the learning model.
-    
+
     Initialize the structure model sm.  The sm.size_psi must be set to
     the number of features.  The ancillary purpose is to add any
     information to sm that is necessary from the user code
@@ -100,7 +103,7 @@ def init_constraints(sample, sm, sparm):
 
     The default behavior is equivalent to returning an empty list,
     i.e., no constraints."""
-
+	'''
     if True:
         # Just some example cosntraints.
         c, d = svmapi.Sparse, svmapi.Document
@@ -123,6 +126,8 @@ def init_constraints(sample, sm, sparm):
         # Append the lhs and the rhs (in this case 0).
         constraints.append((lhs, 0))
     return constraints
+    '''
+    return []
 
 
 def classify_example(x, sm, sparm):
@@ -198,6 +203,27 @@ def find_most_violated_constraint_margin(x, y, sm, sparm):
     return find_most_violated_constraint(x, y, sm, sparm)
 
 def psi(x, y, sm, sparm):
+
+	sequence_length = len(y)
+	observation_values = [ [0 for i in range(69)] for j in range(48) ]
+	transition_values =  [ [0 for i in range(48)] for j in range(48) ]
+
+	#fill in observation value & transition value
+	for i in range(sequence_length-1):
+		observation_values[y[i]] = map( sum, zip(observation_values[y[i]] , x[i]) )
+		px, py = y[i], y[i+1]
+		transition_values[px][py] += 1
+	i = sequence_length-1 #the last
+	observation_values[y[i]] = map( sum, zip(observation_values[y[i]] , x[i]) )
+
+	#arrange values to form a 1-D feature vector
+	thePsi = []
+	for i in range(48):
+		thePsi.extend(observation_values[i])
+	for i in range(48):
+		thePsi.extend(transition_values[i])
+	'''
+	thePsi = []
     """Return a feature vector representing pattern x and label y.
 
     This is the combined feature function, which this returns either a
@@ -209,6 +235,7 @@ def psi(x, y, sm, sparm):
     # constant bias feature we pretend that we have.
     thePsi = [0.5*y*i for i in x]
     thePsi.append(0.5*y) # Pretend as though x had an 1 at the end.
+    '''
     return svmapi.Sparse(thePsi)
 
 def edit_distance(y, ybar):
@@ -236,7 +263,7 @@ def error_rate(y, ybar):
 
 def loss(y, ybar, sparm):
     """Return the loss of ybar relative to the true labeling y.
-    
+
     Returns the loss for the correct label y and the predicted label
     ybar.  In the event that y and ybar are identical loss must be 0.
     Presumably as y and ybar grow more and more dissimilar the
@@ -261,13 +288,13 @@ def print_iteration_stats(ceps, cached_constraint, sample, sm,
     how much the most violated constraint was violated by.  The
     'cached_constraint' argument is true if this constraint was
     constructed from the cache.
-    
+
     The default behavior is that nothing is printed."""
     print
 
 def print_learning_stats(sample, sm, cset, alpha, sparm):
     """Print statistics once learning has finished.
-    
+
     This is called after training primarily to compute and print any
     statistics regarding the learning (e.g., training error) of the
     model on the training sample.  You may also use it to make final
@@ -287,7 +314,7 @@ def print_learning_stats(sample, sm, cset, alpha, sparm):
 
 def print_testing_stats(sample, sm, sparm, teststats):
     """Print statistics once classification has finished.
-    
+
     This is called after all test predictions are made to allow the
     display of any summary statistics that have been accumulated in
     the teststats object through use of the eval_prediction function.
@@ -297,7 +324,7 @@ def print_testing_stats(sample, sm, sparm, teststats):
 
 def eval_prediction(exnum, (x, y), ypred, sm, sparm, teststats):
     """Accumulate statistics about a single training example.
-    
+
     Allows accumulated statistics regarding how well the predicted
     label ypred for pattern x matches the true label y.  The first
     time this function is called teststats is None.  This function's
@@ -314,7 +341,7 @@ def eval_prediction(exnum, (x, y), ypred, sm, sparm, teststats):
 
 def write_model(filename, sm, sparm):
     """Dump the structmodel sm to a file.
-    
+
     Write the structmodel sm to a file at path filename.
 
     The default behavior is equivalent to
@@ -326,7 +353,7 @@ def write_model(filename, sm, sparm):
 
 def read_model(filename, sparm):
     """Load the structure model from a file.
-    
+
     Return the structmodel stored in the file at path filename, or
     None if the file could not be read for some reason.
 
