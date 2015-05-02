@@ -40,8 +40,27 @@ def read_examples(filename, sparm):
     # problem for learning.  The correct hypothesis would obviously
     # tend to have a positive weight for the first feature, and a
     # negative weight for the 4th feature.
-    return [([1,1,0,0], 1), ([1,0,1,0], 1), ([0,1,0,1],-1),
-            ([0,0,1,1],-1), ([1,0,0,0], 1), ([0,0,0,1],-1)]
+
+    f = open(filename)
+
+    data = []
+    prev = ""
+    x = []
+    y = []
+    for line in f:
+        fid, label, features = line.rstrip("\n").split(" ", 2)
+        now = (fid.rsplit("_", 1))[0]
+        if now != prev:
+            prev = now
+            if len(x)>0 and len(y)>0:
+                data.append((x, y))
+            x = []
+            y = []
+
+        x.append([float(f) for f in features.split(" ")])
+        y.append(int(label))
+
+    return data
 
 def init_model(sample, sm, sparm):
     """Initializes the learning model.
@@ -54,7 +73,8 @@ def init_model(sample, sm, sparm):
     # list of four features.  We just want a linear rule, so we have a
     # weight corresponding to each feature.  We also add one to allow
     # for a last "bias" feature.
-    sm.size_psi = len(sample[0][0])+1
+    #sm.size_psi = len(sample[0][0])+1
+    sm.size_psi = 69*48+48*48
 
 def init_constraints(sample, sm, sparm):
     """Initializes special constraints.
@@ -110,7 +130,34 @@ def classify_example(x, sm, sparm):
     # Believe it or not, this is a dot product.  The last element of
     # sm.w is assumed to be the weight associated with the bias
     # feature as explained earlier.
+    a = [sum([ x[0][i]*sm.w[l*69+i] for i in range(69))])  for l in range(48)]
+    labels = []
+    for t in range(1, len(x)):
+        na = []
+        l_t = []
+        for i in range(48):
+            max_j = -1
+            max_v = None
+            for j in range(48):
+                v = a[j] + sm.w[48*69+j*48+i] # or 48*69+j*48+i???
+                if max_j < 0 or v > max_v:
+                    max_v = v
+                    max_j = j
+            na.append(max_v+sum([x[t][p]*sm.w[i*69+p] for p in range(69)]))
+            l_t.append(max_j)
+        a = na
+        labels.append(l_t)
 
+    result = []
+    max_j = 0
+    max_v = a[0]
+    for j in range(1, 48):
+        if a[j] > max_v:
+            max_j = j
+            max_v = a[j]
+    result.insert(0, max_j)
+    for j in range(len(labels), -1, -1):
+        result.insert(0, labels[j][result[0]])
     return sum([i*j for i,j in zip(x,sm.w[:-1])]) + sm.w[-1]
 
 def find_most_violated_constraint(x, y, sm, sparm):

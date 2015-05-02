@@ -53,6 +53,7 @@ def classify_example(x, sm, sparm):
     scores = [(classification_score(x,c,sm,sparm), c)
               for c in xrange(1,sm.num_classes+1)]
     # Return the label with the max discriminant value.
+    
     return max(scores)[1]
 
 def find_most_violated_constraint(x, y, sm, sparm):
