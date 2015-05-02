@@ -130,7 +130,7 @@ def classify_example(x, sm, sparm):
     # Believe it or not, this is a dot product.  The last element of
     # sm.w is assumed to be the weight associated with the bias
     # feature as explained earlier.
-    a = [sum([ x[0][i]*sm.w[l*69+i] for i in range(69))])  for l in range(48)]
+    a = [sum([ x[0][i]*sm.w[l*69+i] for i in range(69))]) for l in range(48)]
     labels = []
     for t in range(1, len(x)):
         na = []
@@ -139,7 +139,7 @@ def classify_example(x, sm, sparm):
             max_j = -1
             max_v = None
             for j in range(48):
-                v = a[j] + sm.w[48*69+j*48+i] # or 48*69+j*48+i???
+                v = a[j] + sm.w[48*69+j*48+i]
                 if max_j < 0 or v > max_v:
                     max_v = v
                     max_j = j
