@@ -21,7 +21,7 @@ def read_examples(filename, sparm):
         tokens = [t.split(':') for t in tokens[1:]]
         features = [(0,1)]+[(int(k),float(v)) for k,v in tokens]
         # Add the example to the list
-        examples.append((svmapi.Sparse(features), target))
+        examples.append( (svmapi.Sparse(features), target) )
     # Print out some very useful statistics.
     print len(examples),'examples read'
     return examples
