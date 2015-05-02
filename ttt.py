@@ -277,6 +277,7 @@ def loss(y, ybar, sparm):
     #if y*ybar > 0: return 0
     #return 1
 
+    #return error_rate(y, ybar)
     return edit_distance(y, ybar)
 
 def print_iteration_stats(ceps, cached_constraint, sample, sm,
@@ -371,7 +372,9 @@ def write_label(fileptr, y):
     object is a file, not a string.  Attempts to close the file are
     ignored.)  The default behavior is equivalent to
     'print>>fileptr,y'"""
-    print>>fileptr,y
+    
+    #print>>fileptr,y
+    print>>fileptr,"\n".join([str(yy) for yy in y])
 
 def print_help():
     """Help printed for badly formed CL-arguments when learning.
