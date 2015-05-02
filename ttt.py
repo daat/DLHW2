@@ -374,7 +374,7 @@ def write_label(fileptr, y):
     'print>>fileptr,y'"""
     
     #print>>fileptr,y
-    print>>fileptr,"\n".join([str(yy) for yy in y])
+    print>>fileptr," ".join([str(yy) for yy in y])
 
 def print_help():
     """Help printed for badly formed CL-arguments when learning.
