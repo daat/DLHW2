@@ -2,6 +2,7 @@
 
 # Thomas Finley, tfinley@gmail.com
 import svmapi
+import time
 '''
 def parse_parameters(sparm):
     """Sets attributes of sparm based on command line arguments.
@@ -104,7 +105,6 @@ def init_constraints(sample, sm, sparm):
 
     The default behavior is equivalent to returning an empty list,
     i.e., no constraints."""
-	
     return []
 
 
@@ -113,6 +113,7 @@ def classify_example(x, sm, sparm):
     # Believe it or not, this is a dot product.  The last element of
     # sm.w is assumed to be the weight associated with the bias
     # feature as explained earlier.
+    
     a = [sum([ x[0][i]*sm.w[l*69+i] for i in range(69)]) for l in range(48)]
     labels = []
     for t in range(1, len(x)):
@@ -139,11 +140,11 @@ def classify_example(x, sm, sparm):
             max_j = j
             max_v = a[j]
     result.insert(0, max_j)
-    for j in range(len(labels), -1, -1):
+    for j in range(len(labels)-1, -1, -1):
         result.insert(0, labels[j][result[0]])
     return result
 
-#def find_most_violated_constraint(x, y, sm, sparm):
+def find_most_violated_constraint(x, y, sm, sparm):
     """Return ybar associated with x's most violated constraint.
 
     Returns the label ybar for pattern x corresponding to the most
@@ -163,6 +164,7 @@ def classify_example(x, sm, sparm):
     #discy, discny = y*score, -y*score + 1
     #if discy > discny: return y
     #return -y
+    return classify_example(x,sm,sparm)
 #
 def find_most_violated_constraint_slack(x, y, sm, sparm):
     """Return ybar associated with x's most violated constraint.
@@ -200,9 +202,9 @@ def psi(x, y, sm, sparm):
 		thePsi.extend(observation_values[i])
 	for i in range(48):
 		thePsi.extend(transition_values[i])
-
+	
 	return svmapi.Sparse(thePsi)
-#
+
 def edit_distance(y, ybar):
     d = [i for i in range(len(ybar)+1)]
     for j in range(1, len(y)+1):
@@ -243,7 +245,7 @@ def loss(y, ybar, sparm):
     #return 1
 
     #return error_rate(y, ybar)
-    return edit_distance(y, ybar)
+    return error_rate(y, ybar)
 #
 def print_iteration_stats(ceps, cached_constraint, sample, sm,
                           cset, alpha, sparm):
@@ -256,6 +258,7 @@ def print_iteration_stats(ceps, cached_constraint, sample, sm,
     constructed from the cache.
 
     The default behavior is that nothing is printed."""
+    print time.localtime()
     print ceps
 #
 def print_learning_stats(sample, sm, cset, alpha, sparm):
